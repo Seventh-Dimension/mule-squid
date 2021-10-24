@@ -20,8 +20,16 @@ def webhook(request):
         game.folder_validations()
         game.getBugs()
         game.getStatus()
+        if game.status == 'Qualified':
+            textresponse = {"fulfillmentMessages": [{"text": {"text": [
+            "Congrats for passing the "+ level + ". Please proceed to play further rounds by mentioning the rounds"
+            ]}}]}
+        else:
+            textresponse = {"fulfillmentMessages": [{"text": {"text": [
+                "Oops. You haven't cleared this level. Do you want to play again? or Exit the game?"
+            ]}}]}
         response = {'Status': game.status}
-    return JsonResponse(response,content_type='application/json')
+    return JsonResponse(textresponse,content_type='application/json')
 
 
 
