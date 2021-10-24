@@ -1,12 +1,18 @@
 from django.shortcuts import render
 from .services import *
 from django.http import HttpResponse,JsonResponse
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def webhook(request):
     if request.method == 'POST':
-        data = request.POST.copy()
-        level = data.get('action')
-        outputContexts = data.get('outputContexts')
+        data = JSONParser().parse(request)
+        print(data)
+        qr = data.get('queryResult')
+        level = qr.get('action')
+        outputContexts = qr.get('outputContexts')
+        print(outputContexts)
         repo = [ctx['parameters']['repoName'] for ctx in outputContexts if ctx['name'].endswith('playsquidgame-level1-followup')][0]
         game = game_play(level)
         game.code_base_git(repo,'main')
